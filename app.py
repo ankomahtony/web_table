@@ -73,7 +73,6 @@ try:
 except:
   st.write("An exception occurred: Might be wrong URL or URL has no table")
 
-file_type = st.selectbox('Type of File',['csv','excel'])
 csv = st.checkbox('CSV')
 excel = st.checkbox('Excel')
 if st.button("Download"):
