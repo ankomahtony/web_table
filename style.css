@@ -1,0 +1,14 @@
+
+
+.stButton>button {
+    background-color: #4F8BF9;
+    color: white;
+}
+
+.stButton>button:hover {
+    background-color: #fff;
+}
+
+.stTextInput>div>div>input {
+    background-color: whitesmoke;
+}
