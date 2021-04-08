@@ -11,7 +11,6 @@ import csv
 from urllib.request import urlopen
 
 # CSS
-@st.cache(suppress_st_warning=True)
 def remote_css(url):
     st.markdown(f'<link href="{url}" rel="stylesheet">',unsafe_allow_html=True)
 
@@ -37,28 +36,28 @@ def remove_html_space(text):
     clean = re.compile('  ')
     return re.sub(clean, '', text)
 #
-@st.cache(suppress_st_warning=True)
 def load_data_csv(html):
     html = urlopen(html)
     html = html.read().decode("utf-8")
     html = remove_html_n(html)
     html = remove_html_space(html)
-    soup = BeautifulSoup(html,'html.parser')
-    table = soup.find("table")
+    soup = BeautifulSoup(html,'lxml')
+    tables = soup.find_all("table")
 
 
-    output_rows = []
-    for table_row in table.findAll('tr'):
-        columns = table_row.findAll('th')
-        columns += table_row.findAll('td')
-        output_row = []
-        for column in columns:
-            output_row.append(column.text)
-        output_rows.append(output_row)
+    for table in tables:
+        output_rows = []
+        for table_row in table.find_all('tr'):
+            columns = table_row.find_all('th')
+            columns = table_row.find_all('td')
+            output_row = []
+            for column in columns:
+                output_row.append(column.text)
+            output_rows.append(output_row)
 
-    with open('dataset.csv', 'w', newline='') as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerows(output_rows)
+        with open('dataset.csv', 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerows(output_rows)
 
 
 st.title("Download an CSV form of Data From A Website")
@@ -72,6 +71,28 @@ try:
   st.write(html_url)
 except:
   st.write("An exception occurred: Might be wrong URL or URL has no table")
+
+
+
+if st.button('Preview'):
+    html = urlopen(html_url)
+    html = html.read().decode("utf-8")
+    html = remove_html_n(html)
+    html = remove_html_space(html)
+    soup = BeautifulSoup(html,'lxml')
+    tables = soup.find_all("table")
+
+    for table in tables:
+        output_rows = []
+        for table_row in table.find_all('tr'):
+            columns = table_row.findAll('th')
+            columns += table_row.findAll('td')
+            output_row = []
+            for column in columns:
+                output_row.append(column.text)
+            output_rows.append(output_row)
+        df = pd.DataFrame(output_rows)
+        st.write(df)
 
 csv = st.checkbox('CSV')
 excel = st.checkbox('Excel')
