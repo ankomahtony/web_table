@@ -93,6 +93,15 @@ if st.button('Preview'):
             output_rows.append(output_row)
         df = pd.DataFrame(output_rows)
         st.write(df)
+        if st.button("Download"):
+            from pathlib import Path
+            path_to_download_folder = str(os.path.join(Path.home(), "Downloads/Web_data"))
+            if not os.path.exists(path_to_download_folder):
+                os.makedirs(path_to_download_folder)
+            fileName = 'file'+str(datetime.now())
+            df_web = pd.read_csv('dataset.csv', thousands=',')
+                df_web.to_csv(path_to_download_folder+'/'+fileName+'.csv', index = False)
+                st.markdown('You have just downloaded excel and csv format of your data and you can find it in your Downloads/Web_data Folder')
 
 csv = st.checkbox('CSV')
 excel = st.checkbox('Excel')
