@@ -100,8 +100,8 @@ if st.button('Preview'):
                 os.makedirs(path_to_download_folder)
             fileName = 'file'+str(datetime.now())
             df_web = pd.read_csv('dataset.csv', thousands=',')
-                df_web.to_csv(path_to_download_folder+'/'+fileName+'.csv', index = False)
-                st.markdown('You have just downloaded excel and csv format of your data and you can find it in your Downloads/Web_data Folder')
+            df_web.to_csv(path_to_download_folder+'/'+fileName+'.csv', index = False)
+            st.markdown('You have just downloaded excel and csv format of your data and you can find it in your Downloads/Web_data Folder')
 
 csv = st.checkbox('CSV')
 excel = st.checkbox('Excel')
