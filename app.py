@@ -44,7 +44,6 @@ def load_data_csv(html):
     soup = BeautifulSoup(html,'lxml')
     tables = soup.find_all("table")
 
-
     for table in tables:
         output_rows = []
         for table_row in table.find_all('tr'):
@@ -63,25 +62,33 @@ def load_data_csv(html):
 st.title("Download an CSV form of Data From A Website")
 
 html_url = st.text_input("Enter the url of the website here")
-
+st.write(html_url)
 try:
   load_data_csv(html_url)
   df_web = pd.read_csv('dataset.csv', thousands=',')
-  st.write(df_web)
-  st.write(html_url)
 except:
   st.write("An exception occurred: Might be wrong URL or URL has no table")
 
+def download_csv(df):
+    from pathlib import Path
+    import os
+    path_to_download_folder = str(os.path.join(Path.home(), "Downloads/Web_data"))
+    if not os.path.exists(path_to_download_folder):
+        os.makedirs(path_to_download_folder)
+    fileName = 'file'+str(datetime.now())
+    df.to_csv(path_to_download_folder+'/'+fileName+'.csv', index = False)
+    st.markdown('You have just downloaded excel and csv format of your data and you can find it in your Downloads/Web_data Folder')
 
 
-if st.button('Preview'):
+
+if st.button('Please Preview'):
     html = urlopen(html_url)
     html = html.read().decode("utf-8")
     html = remove_html_n(html)
     html = remove_html_space(html)
     soup = BeautifulSoup(html,'lxml')
     tables = soup.find_all("table")
-
+    x=1
     for table in tables:
         output_rows = []
         for table_row in table.find_all('tr'):
@@ -93,36 +100,30 @@ if st.button('Preview'):
             output_rows.append(output_row)
         df = pd.DataFrame(output_rows)
         st.write(df)
-        if st.button("Download"):
-            from pathlib import Path
-            path_to_download_folder = str(os.path.join(Path.home(), "Downloads/Web_data"))
-            if not os.path.exists(path_to_download_folder):
-                os.makedirs(path_to_download_folder)
-            fileName = 'file'+str(datetime.now())
-            df_web = pd.read_csv('dataset.csv', thousands=',')
-            df_web.to_csv(path_to_download_folder+'/'+fileName+'.csv', index = False)
-            st.markdown('You have just downloaded excel and csv format of your data and you can find it in your Downloads/Web_data Folder')
+        if st.button("Download",key=x):
+            download_csv(df)
+        x+=1
 
-csv = st.checkbox('CSV')
-excel = st.checkbox('Excel')
-if st.button("Download"):
-    from pathlib import Path
-    path_to_download_folder = str(os.path.join(Path.home(), "Downloads/Web_data"))
-
-    if not os.path.exists(path_to_download_folder):
-        os.makedirs(path_to_download_folder)
-
-    fileName = 'file'+str(datetime.now())
-    df_web = pd.read_csv('dataset.csv', thousands=',')
-    if csv and excel:
-        df_web.to_csv(path_to_download_folder+'/'+fileName+'.csv', index = False)
-        df_web.to_excel(path_to_download_folder+'/'+fileName+'.xlsx', index = False)
-        st.markdown('You have just downloaded excel and csv format of your data and you can find it in your Downloads/Web_data Folder')
-    elif csv:
-        df_web.to_csv(path_to_download_folder+'/'+fileName+'.csv', index = False)
-        st.markdown('You have just downloaded csv format of your data and you can find it in your Downloads/Web_data Folder')
-    elif excel:
-        df_web.to_excel(path_to_download_folder+'/'+fileName+'.xlsx', index = False)
-        st.markdown('You have just downloaded excel format of your data and you can find it in your Downloads/Web_data Folder')
-    else:
-        st.markdown('You did choose file type so nothing was downloaded')
+# csv = st.checkbox('CSV')
+# excel = st.checkbox('Excel')
+# if st.button("Download"):
+#     from pathlib import Path
+#     path_to_download_folder = str(os.path.join(Path.home(), "Downloads/Web_data"))
+#
+#     if not os.path.exists(path_to_download_folder):
+#         os.makedirs(path_to_download_folder)
+#
+#     fileName = 'file'+str(datetime.now())
+#     df_web = pd.read_csv('dataset.csv', thousands=',')
+#     if csv and excel:
+#         df_web.to_csv(path_to_download_folder+'/'+fileName+'.csv', index = False)
+#         df_web.to_excel(path_to_download_folder+'/'+fileName+'.xlsx', index = False)
+#         st.markdown('You have just downloaded excel and csv format of your data and you can find it in your Downloads/Web_data Folder')
+#     elif csv:
+#         df_web.to_csv(path_to_download_folder+'/'+fileName+'.csv', index = False)
+#         st.markdown('You have just downloaded csv format of your data and you can find it in your Downloads/Web_data Folder')
+#     elif excel:
+#         df_web.to_excel(path_to_download_folder+'/'+fileName+'.xlsx', index = False)
+#         st.markdown('You have just downloaded excel format of your data and you can find it in your Downloads/Web_data Folder')
+#     else:
+#         st.markdown('You did choose file type so nothing was downloaded')
