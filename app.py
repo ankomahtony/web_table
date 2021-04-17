@@ -63,11 +63,6 @@ st.title("Download an CSV form of Data From A Website")
 
 html_url = st.text_input("Enter the url of the website here")
 st.write(html_url)
-try:
-  load_data_csv(html_url)
-  df_web = pd.read_csv('dataset.csv', thousands=',')
-except:
-  st.write("An exception occurred: Might be wrong URL or URL has no table")
 
 def download_csv(df):
     from pathlib import Path
